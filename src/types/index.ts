@@ -1,67 +1,49 @@
-import { IEvents } from '../components/base/events';
-// карточка товара
-interface IProduct {
+// Карточка товара
+export interface IProduct {
     id: string;
-    description: string;
-    image: string;
-    title: string;
     category: string;
-    price: number
-    index?: number;
+    title: string;
+    image: string;
+    description: string;
+    price: number | null;
+    //index?: number;
 }
-
-// массив карточек на главной странице
-interface IProductsList {
-    items: IProduct[];
-    preview: string | null;
-}
-
-// информация о товарах в корзине
-type IBasket = Pick<IProduct, 'title' | 'price'>;
-
-//форма ввода информации о способе оплаты и адресе 
-interface IOrder {
+// Данные пользователя/покупателя
+export interface IUser {
     payment: string;
     address: string;
-}
-
-//форма ввода контактных данных пользователя
-interface IBuyerInfo {
     email: string;
     phone: string;
 }
 
-//общие данные для заказа
-type IShoppingInfo = IOrder & IBuyerInfo;
+//Форма оплаты и адреса
+export type TOrder =  Pick<IUser, 'payment' | 'address'>;
 
-type IShoppingPost = IShoppingInfo & {
-    total: number;
-    items: string[];
-}
+//Форма контактных данных пользователя
+export type TBuyerInfo =  Pick<IUser, 'email' | 'phone'>;
 
-//вывод текста ошибок
-type IFormError = Partial<IShoppingInfo>;
+//Форма корзины
+export type TBasket = Pick<IProduct, 'title' | 'price'>;
 
-//валидация форм
-interface IOrderData {
-    CheckValidation(data: Record<keyof IOrder, string>): boolean;
-}
-
-interface IBuyerInfoData {
-    CheckValidation(data: Record<keyof IBuyerInfo, string>): boolean;
-}
-
-//форма успешной оплаты
-interface ISuccessfulOrder {
+//Форма успешной оплаты
+export interface ISuccessfulOrder {
     id: string;
     total: number;
 }
 
-//общие данные о магазине
-interface IAppInfo {
-    catalog: IProduct[];
-    basket: IProduct[];
-    order: IShoppingInfo;
-    formError: IFormError;
-    events: IEvents;
+// Интерфейс по работе с карточками товаров
+export interface IProductCardData {
+    items: IProduct[];
+    preview: string | null;
+    addCardProduct(card:IProduct):void;
+    deleteCardProduct(cardId: string, payload: Function | null): void;
+    updateCardProduct(card: IProduct, payload: Function | null): void;
+    getCardProduct(cardId: string): IProduct;
+    checkProductValidation(data: Record<keyof IProduct, string>): boolean;
+}
+// Интерфейс по работе с данными пользователя
+export interface IUserData {
+    getUserInfo(): IUser;
+    setUserInfo(userData:IUser): void;
+    checkUserValidation(data: Record<keyof IUser, string>): boolean;
 }
