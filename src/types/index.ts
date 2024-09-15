@@ -1,19 +1,47 @@
+import { IEvents } from '../components/base/events';
+
+//Общие данные о приложении
+export interface IAppData {
+    catalog: IProduct[];
+    basket: IProduct[];
+    order: IUser;
+    events: IEvents;
+    formError: TFormError;
+}
+
 // Карточка товара
 export interface IProduct {
+	getStateIsNull: boolean;
     id: string;
     category: string;
     title: string;
     image: string;
     description: string;
     price: number | null;
-    //index?: number;
+    index?: number;
 }
+
+// Категории товара
+export enum EProductCategory {
+	'софт-скил' = 'soft',
+	'хард-скил' = 'hard',
+	'другое' = 'other',
+	'дополнительное' = 'additional',
+	'кнопка' = 'button'
+}
+
 // Данные пользователя/покупателя
 export interface IUser {
     payment: string;
     address: string;
     email: string;
     phone: string;
+}
+
+// Данные для отправки заказа на сервер
+export interface IShoppingPost extends IUser{
+    total: number;
+    items: string[];
 }
 
 //Форма оплаты и адреса
@@ -25,25 +53,13 @@ export type TBuyerInfo =  Pick<IUser, 'email' | 'phone'>;
 //Форма корзины
 export type TBasket = Pick<IProduct, 'title' | 'price'>;
 
+//Текстовые ошибки форм
+export type TFormError = Partial<IUser>;
+
 //Форма успешной оплаты
 export interface ISuccessfulOrder {
     id: string;
     total: number;
 }
 
-// Интерфейс по работе с карточками товаров
-export interface IProductCardData {
-    items: IProduct[];
-    preview: string | null;
-    addCardProduct(card:IProduct):void;
-    deleteCardProduct(cardId: string, payload: Function | null): void;
-    updateCardProduct(card: IProduct, payload: Function | null): void;
-    getCardProduct(cardId: string): IProduct;
-    checkProductValidation(data: Record<keyof IProduct, string>): boolean;
-}
-// Интерфейс по работе с данными пользователя
-export interface IUserData {
-    getUserInfo(): IUser;
-    setUserInfo(userData:IUser): void;
-    checkUserValidation(data: Record<keyof IUser, string>): boolean;
-}
+

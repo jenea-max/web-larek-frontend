@@ -8,6 +8,7 @@ type EmitterEvent = {
 };
 
 export interface IEvents {
+    onClick(arg0: string, onClick: any): unknown;
     on<T extends object>(event: EventName, callback: (data: T) => void): void;
     emit<T extends object>(event: string, data?: T): void;
     trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void;
@@ -23,6 +24,9 @@ export class EventEmitter implements IEvents {
 
     constructor() {
         this._events = new Map<EventName, Set<Subscriber>>();
+    }
+    onClick(arg0: string, onClick: any): unknown {
+        throw new Error("Method not implemented.");
     }
 
     /**
