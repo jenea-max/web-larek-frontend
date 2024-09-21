@@ -68,19 +68,22 @@ events.on('items:changed', () => {
 events.on('card:select', (item: IProduct) => {
 	const card = new CardOpen (cloneTemplate(cardPreviewTemplate),events, {
 		onClick: () => {
+			if (item.price === null) {
+        return;
+      }
 			if (!appState.isInBasket(item)) {
-				appState.addInBasket(item);
-				card.updateButtonState({inBasket: true });
+        appState.addInBasket(item);
+        card.updateButtonState({ inBasket: true, isPriceless: item.price === null });
 				modal.close();
-			} else {
-				appState.removeFromBasket(item);
-				card.updateButtonState({ inBasket: false });
-			}
-			card.inBasket = appState.isInBasket(item);
-		},
-	});
-
-	card.inBasket = appState.isInBasket(item);
+      } else {
+        appState.removeFromBasket(item);
+        card.updateButtonState({ inBasket: false, isPriceless: item.price === null });
+      }
+      card.inBasket = appState.isInBasket(item);
+    }
+  });
+	
+  const isPriceless = item.price === null;
 	modal.render({
 		content: card.render({
       price: item.price,
@@ -90,9 +93,16 @@ events.on('card:select', (item: IProduct) => {
 			buttonState: {
 				stateIsNull: item.getStateIsNull,
 				stateInBasket: appState.isInBasket(item),
+				isPriceless: isPriceless, 
 			},
 		}),
 	});
+	// Устанавливаем правильное состояние кнопки при открытии карточки
+  card.buttonState = {
+    stateIsNull: item.getStateIsNull,  
+    inBasket: appState.isInBasket(item),
+		isPriceless: isPriceless,
+  };
 });
 
 // Добавить товар в корзину
@@ -139,6 +149,7 @@ events.on('basket:changed', () => {
 		items,
 		total: appState.getTotalBasket(),
 	});
+	
 });
 
 // Открыть форму ввода адреса и выбора способа оплаты

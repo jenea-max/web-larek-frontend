@@ -12,6 +12,7 @@ export interface IAppData {
 // Карточка товара
 export interface IProduct {
 	getStateIsNull: boolean;
+    isPriceless?: boolean;
     id: string;
     category: string;
     title: string;

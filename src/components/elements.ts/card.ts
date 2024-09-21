@@ -85,6 +85,7 @@ export class CardCatalog extends Card {
 export class CardOpen extends CardCatalog {
 	protected _descriptionElement: HTMLElement;
   inBasket: boolean;
+	isUnavailable: boolean;
 
 	constructor(
 		protected _container: HTMLElement,
@@ -103,25 +104,27 @@ export class CardOpen extends CardCatalog {
 		this.setText(this._descriptionElement, value);
 	}
 
-	set buttonState(state: { isUnavailable: boolean; inBasket: boolean }) {
+	set buttonState(state: { stateIsNull: boolean; inBasket: boolean; isPriceless: boolean }) {
 		if (this._actionButton) {
-			if (state.isUnavailable) {
+			// Если товар бесценен
+			if (state.isPriceless) {
+				this.setDisabled(this._actionButton, true);
+				this.setText(this._actionButton, 'Невозможно купить');
+			} else if (state.stateIsNull) {
 				this.setDisabled(this._actionButton, true);
 				this.setText(this._actionButton, 'Недоступно');
-			}
-			if (state.inBasket) {
-				this.setText(
-					this._actionButton,
-					state.inBasket ? 'Убрать из корзины' : 'В корзину'
-				);
+			} else {
+				// Если товар в корзине
+				this.setText(this._actionButton, state.inBasket ? 'Удалить из корзины' : 'В корзину');
+				this.setDisabled(this._actionButton, false); // Разблокируем кнопку, если товар не бесценен
 			}
 		}
 	}
 	
-	updateButtonState({ inBasket }: { inBasket: boolean }) {
-		if (this._actionButton)
-			{this.setText(this._actionButton, inBasket ? 'Убрать из корзины' : 'В корзину');
-				this._actionButton.disabled = inBasket;
+	updateButtonState({ inBasket }: { inBasket: boolean; isPriceless: boolean }) {
+		if (this._actionButton) {
+			this.setText(this._actionButton, inBasket ? 'Убрать из корзины' : 'В корзину');
+				this._actionButton.disabled = false;
 		}
 	}
 }
@@ -129,6 +132,7 @@ export class CardOpen extends CardCatalog {
 // Класс карты товара в корзине
 export class CardBasket extends Card {
 	protected _indexElement: HTMLElement;
+	protected actions?: ICardActions
 
 	constructor(
 		protected _container: HTMLElement,
@@ -140,6 +144,6 @@ export class CardBasket extends Card {
 	}
 
 	set index(value: number) {
-		this._indexElement.textContent = String(value);
+		this.setText(this._indexElement, value);
 	}
 }

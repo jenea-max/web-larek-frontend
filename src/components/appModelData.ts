@@ -8,7 +8,7 @@ export class ProductCardData extends Model<IProduct> {
   image: string;
   description: string;
   price: number | null;
-	buttonState: { stateIsNull: boolean; stateInBasket: boolean };
+	buttonState: { stateIsNull: boolean; stateInBasket: boolean, isPriceless?: boolean };
 	index: number;
 
 	getStateIsNull() {

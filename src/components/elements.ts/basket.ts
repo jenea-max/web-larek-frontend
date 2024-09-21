@@ -46,6 +46,7 @@ export class Basket extends Component<IBasketView> {
     this.setText(this._total, `${String(total)} синапсов`);
   }
 
+  
   // Метод рендера для обновления данных корзины
   render(data?: IBasketView) {
     if (!data) return this.container;
